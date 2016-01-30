@@ -5,13 +5,15 @@
 #include "erl_nif.h"
 #include "tweetnacl.h"
 
+typedef unsigned char U8;
+
 void randombytes(unsigned char buffer[], unsigned long long size);
 
 static ERL_NIF_TERM nif_crypto_box_keypair(ErlNifEnv* env, int argc,
                                            const ERL_NIF_TERM argv[])
 {
     ERL_NIF_TERM pk, sk;
-    char *pk_data, *sk_data;
+    U8 *pk_data, *sk_data;
     int rc;
 
     pk_data = enif_make_new_binary(env, crypto_box_PUBLICKEYBYTES, &pk);
@@ -25,7 +27,7 @@ static ERL_NIF_TERM nif_nounce(ErlNifEnv* env, int argc,
                                const ERL_NIF_TERM argv[])
 {
     ERL_NIF_TERM nonce;
-    char* data;
+    U8* data;
 
     data = enif_make_new_binary(env, crypto_box_NONCEBYTES, &nonce);
     randombytes(data, crypto_box_NONCEBYTES);
@@ -38,7 +40,7 @@ static ERL_NIF_TERM nif_crypto_box(ErlNifEnv* env, int argc,
     unsigned int len;
     ErlNifBinary message, nonce, pk, sk;
     ERL_NIF_TERM encrypted;
-    char* encrypted_data;
+    U8* encrypted_data;
     int rc;
     
     if (!enif_get_uint(env, argv[1], &len)) {
@@ -81,7 +83,7 @@ static ERL_NIF_TERM nif_crypto_box_open(ErlNifEnv* env, int argc,
     unsigned int len;
     ErlNifBinary encrypted, nonce, pk, sk;
     ERL_NIF_TERM plain;
-    char* data;
+    U8* data;
     int rc;
 
     if (!enif_get_uint(env, argv[1], &len)) {
